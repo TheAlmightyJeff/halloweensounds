@@ -1,637 +1,199 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halloween Sounds</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#090d16',
-                        cardbg: '#131c2e',
-                        accent: '#f97316', // Orange theme for Halloween
-                        accenthover: '#ea580c'
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Spooky Soundboard</title>
     <style>
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        input[type=range] { accent-color: #f97316; }
+        body { font-family: sans-serif; background: #121212; color: #fff; margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
+        .panel { background: #1e1e1e; padding: 15px; border-radius: 8px; border: 1px solid #333; }
+        h2 { margin: 0 0 10px 0; font-size: 18px; color: #ff7518; }
+        button { background: #ff7518; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+        button:hover { background: #e06010; }
+        button.secondary { background: #333; }
+        button.secondary:hover { background: #444; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .sound-card { background: #181818; padding: 10px; border-radius: 6px; border: 1px solid #2a2a2a; display: flex; flex-direction: column; gap: 8px; }
+        .sound-card button { padding: 8px; font-size: 14px; }
+        input[type=range] { width: 100%; cursor: pointer; accent-color: #ff7518; }
+        .flex { display: flex; gap: 10px; }
     </style>
 </head>
-<body class="bg-darkbg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-accent selection:text-white pb-12 sm:pb-0">
+<body>
 
-    <!-- Header Section -->
-    <header class="border-b border-slate-800/80 bg-cardbg/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-600/30 shrink-0">
-                        <i class="fa-solid fa-ghost text-white text-lg"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center space-x-2">
-                            <span>Halloween Sounds</span>
-                        </h1>
-                        <p class="text-[11px] text-slate-400">Spooky Soundboard & Ambient Mixer</p>
-                    </div>
-                </div>
-                <!-- Mobile Config Trigger button -->
-                <button onclick="openConfigModal()" class="sm:hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center cursor-pointer">
-                    <i class="fa-solid fa-gear text-sm"></i>
-                </button>
+<div class="container">
+    <!-- Ambient Panel -->
+    <div class="panel">
+        <h2>Haunted Ambient</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="flex">
+                <button id="ambientBtn" onclick="toggleAmbient()">Play Ambient</button>
+                <button class="secondary" onclick="stopAmbient()">Stop</button>
             </div>
-
-            <!-- Master Controls Header -->
-            <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto space-x-3 bg-slate-900/90 px-4 py-2.5 rounded-2xl border border-slate-800">
-                <div class="flex items-center space-x-3">
-                    <button id="masterMuteBtn" onclick="toggleMasterMute()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-all cursor-pointer shrink-0">
-                        <i id="masterMuteIcon" class="fa-solid fa-volume-high"></i>
-                    </button>
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Volume</span>
-                        <input id="masterVolume" type="range" min="0" max="1" step="0.01" value="0.8" oninput="updateMasterVolume(this.value)" class="w-28 sm:w-32 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-                    </div>
-                </div>
-                <div class="hidden sm:block h-6 w-[1px] bg-slate-800"></div>
-                <button onclick="openConfigModal()" class="hidden sm:flex text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700 transition items-center space-x-1.5 cursor-pointer">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>Config</span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-
-        <!-- Left Column: Ambient Dedicated Player -->
-        <section class="lg:col-span-1 flex flex-col space-y-6">
-            <div class="bg-cardbg rounded-3xl p-5 sm:p-6 border border-slate-800/80 shadow-xl relative overflow-hidden flex flex-col justify-between">
-                <!-- Background decorative glow -->
-                <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full border border-orange-500/20">
-                            Spooky Ambient
-                        </span>
-                        <div id="ambientStatusBadge" class="flex items-center space-x-1.5 text-xs text-slate-400">
-                            <span class="w-2 h-2 rounded-full bg-slate-600" id="ambientDot"></span>
-                            <span id="ambientStatusText">Stopped</span>
-                        </div>
-                    </div>
-
-                    <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">Haunted Atmosphere</h2>
-                    <p class="text-xs sm:text-sm text-slate-400 mb-6">Continuous background track with seamless 3-second crossfading loop.</p>
-                </div>
-
-                <div class="space-y-6">
-                    <!-- Low power visual indicator (Replaces heavy canvas/JS interval animation when inactive or backgrounded) -->
-                    <div class="h-14 bg-slate-900/60 rounded-2xl border border-slate-800/80 px-4 flex items-center justify-between">
-                        <div class="flex items-center space-x-2 text-xs text-slate-400">
-                            <i class="fa-solid fa-wave-square text-orange-400"></i>
-                            <span id="powerModeText">Power Saver: Active</span>
-                        </div>
-                        <div class="flex space-x-1">
-                            <div class="w-1.5 h-3 bg-orange-500/40 rounded-full"></div>
-                            <div class="w-1.5 h-6 bg-orange-500/70 rounded-full"></div>
-                            <div class="w-1.5 h-4 bg-orange-500/50 rounded-full"></div>
-                        </div>
-                    </div>
-
-                    <!-- Ambient Controls -->
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-medium text-slate-300">Ambient Volume</span>
-                            <span id="ambientVolVal" class="text-xs font-mono text-slate-400">70%</span>
-                        </div>
-                        <input id="ambientVolSlider" type="range" min="0" max="1" step="0.01" value="0.7" oninput="setAmbientVolume(this.value)" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-
-                        <div class="grid grid-cols-2 gap-3 pt-2">
-                            <button id="ambientPlayBtn" onclick="toggleAmbientPlay()" class="w-full py-3.5 sm:py-3 bg-orange-600 hover:bg-orange-500 text-white font-medium rounded-2xl shadow-lg shadow-orange-600/30 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95">
-                                <i id="ambientPlayIcon" class="fa-solid fa-play"></i>
-                                <span id="ambientPlayText">Play Ambient</span>
-                            </button>
-                            <button onclick="stopAmbient()" class="w-full py-3.5 sm:py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-2xl border border-slate-700 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95">
-                                <i class="fa-solid fa-stop"></i>
-                                <span>Stop</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GitHub Pages Notice Card -->
-            <div class="bg-cardbg/60 rounded-2xl p-4 sm:p-5 border border-slate-800 text-xs text-slate-400 leading-relaxed">
-                <div class="flex items-start space-x-3">
-                    <i class="fa-solid fa-circle-info text-orange-400 text-sm mt-0.5"></i>
-                    <div>
-                        <strong class="text-slate-200 block mb-1">GitHub Pages Setup:</strong>
-                        Place sound files in a <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">sounds/</code> folder. Include <code class="text-slate-300">ambient.mp3</code> for the haunted background.
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Right Column: Soundboard Library -->
-        <section class="lg:col-span-2 flex flex-col space-y-6">
-            <div class="bg-cardbg rounded-3xl p-5 sm:p-6 border border-slate-800/80 shadow-xl flex flex-col h-full">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-white mb-1">Sound Effects</h2>
-                        <p class="text-xs sm:text-sm text-slate-400">Tap to trigger individual creepy sound effects.</p>
-                    </div>
-                    <div class="flex items-center space-x-2 w-full sm:w-auto">
-                        <div class="relative flex-grow sm:flex-grow-0">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-                            <input type="text" id="soundSearch" placeholder="Search sounds..." oninput="filterSounds(this.value)" class="w-full sm:w-48 bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 sm:py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500 transition">
-                        </div>
-                        <button onclick="stopAllSounds()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-medium border border-slate-700 transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap active:scale-95">
-                            <i class="fa-solid fa-ban"></i>
-                            <span>Stop All</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Sound Cards Grid -->
-                <div id="soundGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto max-h-[600px] pr-1">
-                    <!-- Dynamically populated sound cards -->
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        <p>Halloween Sounds • GitHub Pages Static Hosting • Low Power Battery Saver Enabled</p>
-    </footer>
-
-    <!-- Config Modal -->
-    <div id="configModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-cardbg border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-sliders text-orange-500"></i>
-                    <span>Sound Manifest Config</span>
-                </h3>
-                <button onclick="closeConfigModal()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <p class="text-xs text-slate-400 mb-4">
-                Edit the JSON array below to list all your sound files residing in your repository's <code class="text-slate-300">sounds/</code> folder.
-            </p>
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Sounds Array (JSON)</label>
-                <textarea id="configJsonInput" rows="8" class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-orange-500 transition"></textarea>
-            </div>
-            <div class="flex justify-end space-x-3">
-                <button onclick="resetDefaultConfig()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">
-                    Reset Defaults
-                </button>
-                <button onclick="saveAndApplyConfig()" class="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-medium shadow-lg shadow-orange-600/30 transition">
-                    Save & Apply
-                </button>
+            <div>
+                <label style="font-size: 12px; color: #aaa;">Volume</label>
+                <input type="range" min="0" max="1" step="0.01" value="0.7" oninput="setAmbientVolume(this.value)">
             </div>
         </div>
     </div>
 
-    <!-- Alert / Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 border border-slate-700 text-slate-200 px-4 py-3 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3 text-xs">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-orange-400"></i>
-        <span id="toastMsg">Action completed successfully.</span>
+    <!-- Soundboard Panel -->
+    <div class="panel">
+        <h2>Sound Effects</h2>
+        <div class="grid" id="soundGrid">
+            <!-- Populated via JS -->
+        </div>
     </div>
+</div>
 
-    <!-- Application Script Logic -->
-    <script>
-        /* Default Spooky Halloween Sound Manifest */
-        const DEFAULT_SOUNDS = [
-            "air hiss.wav",
-            "loud knock ambient.wav",
-            "minecraft cave sound.mp3",
-            "quiet metal knock.wav",
-            "quiet wood knock.mp3"
-        ];
+<script>
+    const sounds = [
+        { name: "Air Hiss", file: "sounds/air hiss.wav" },
+        { name: "Loud Knock", file: "sounds/loud knock ambient.wav" },
+        { name: "Minecraft Cave", file: "sounds/minecraft cave sound.mp3" },
+        { name: "Metal Knock", file: "sounds/quiet metal knock.wav" },
+        { name: "Wood Knock", file: "sounds/quiet wood knock.mp3" }
+    ];
 
-        let soundFiles = [];
-        let soundInstances = {};
-        let masterVolumeVal = 0.8;
-        let isMasterMuted = false;
+    let ambientGain = null, ambientSource = null, ambientAudioCtx = null, isAmbientPlaying = false;
+    const soundNodes = {};
 
-        /* Ambient Dual-Player Crossfade State */
-        let ambientAudio1 = new Audio();
-        let ambientAudio2 = new Audio();
-        let activeAmbientPlayer = 1;
-        let isAmbientPlaying = false;
-        let ambientVolumeVal = 0.7;
-        const CROSSFADE_DURATION = 3; // 3 seconds crossfade
-        let isPageVisible = true;
-        let savedAmbientStateBeforeHide = false;
-
-        window.onload = function() {
-            loadConfiguration();
-            setupAmbientAudio();
-            renderSoundCards();
-            setupVisibilityAPI();
-        };
-
-        // Page Visibility API for Low Power / Battery Saving when minimized or tab switched
-        function setupVisibilityAPI() {
-            document.addEventListener("visibilitychange", () => {
-                if (document.hidden) {
-                    isPageVisible = false;
-                    document.getElementById('powerModeText').textContent = "Power Saver: Low Power (Background)";
-                    // If ambient is playing, pause to save battery on mobile background, or lower resources
-                    if (isAmbientPlaying) {
-                        savedAmbientStateBeforeHide = true;
-                        stopAmbient();
-                    }
-                } else {
-                    isPageVisible = true;
-                    document.getElementById('powerModeText').textContent = "Power Saver: Active";
-                    if (savedAmbientStateBeforeHide) {
-                        savedAmbientStateBeforeHide = false;
-                        startAmbient();
-                    }
-                }
-            });
+    // Audio Context & Gain Node Helper to prevent clicks (smooth ramping)
+    function getAudioContext() {
+        if (!window.audioCtx) {
+            window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-
-        function loadConfiguration() {
-            const saved = localStorage.getItem('halloween_sounds_manifest');
-            if (saved) {
-                try {
-                    soundFiles = JSON.parse(saved);
-                } catch(e) {
-                    soundFiles = [...DEFAULT_SOUNDS];
-                }
-            } else {
-                soundFiles = [...DEFAULT_SOUNDS];
-            }
+        if (window.audioCtx.state === 'suspended') {
+            window.audioCtx.resume();
         }
+        return window.audioCtx;
+    }
 
-        function openConfigModal() {
-            document.getElementById('configJsonInput').value = JSON.stringify(soundFiles, null, 2);
-            document.getElementById('configModal').classList.remove('hidden');
+    // --- Ambient Audio Setup (Seamless looping buffer with smooth gain) ---
+    let ambientBuffer = null;
+    async function loadAmbient() {
+        if (ambientBuffer) return;
+        try {
+            const ctx = getAudioContext();
+            const res = await fetch('sounds/ambient.mp3');
+            const arrayBuffer = await res.arrayBuffer();
+            ambientBuffer = await ctx.decodeAudioData(arrayBuffer);
+        } catch(e) {
+            console.error("Ambient load failed, check file path:", e);
         }
+    }
 
-        function closeConfigModal() {
-            document.getElementById('configModal').classList.add('hidden');
-        }
-
-        function resetDefaultConfig() {
-            soundFiles = [...DEFAULT_SOUNDS];
-            document.getElementById('configJsonInput').value = JSON.stringify(soundFiles, null, 2);
-            showToast("Reset to default sound list", "info");
-        }
-
-        function saveAndApplyConfig() {
-            try {
-                const parsed = JSON.parse(document.getElementById('configJsonInput').value);
-                if (!Array.isArray(parsed)) throw new Error("Must be an array");
-                soundFiles = parsed;
-                localStorage.setItem('halloween_sounds_manifest', JSON.stringify(soundFiles));
-                closeConfigModal();
-                renderSoundCards();
-                showToast("Configuration saved successfully!", "success");
-            } catch(e) {
-                showToast("Invalid JSON format. Please check your syntax.", "error");
-            }
-        }
-
-        // Master Audio Controls
-        function updateMasterVolume(val) {
-            masterVolumeVal = parseFloat(val);
-            applyAmbientVolumes();
-            Object.keys(soundInstances).forEach(name => {
-                const item = soundInstances[name];
-                if (item && item.audio) {
-                    const effectiveVol = (isMasterMuted ? 0 : masterVolumeVal) * (item.volume !== undefined ? item.volume : 0.8);
-                    item.audio.volume = Math.max(0, Math.min(1, effectiveVol));
-                }
-            });
-        }
-
-        function toggleMasterMute() {
-            isMasterMuted = !isMasterMuted;
-            const icon = document.getElementById('masterMuteIcon');
-            if (isMasterMuted) {
-                icon.className = "fa-solid fa-volume-xmark text-red-400";
-                showToast("Master Muted", "info");
-            } else {
-                icon.className = "fa-solid fa-volume-high";
-                showToast("Master Unmuted", "info");
-            }
-            updateMasterVolume(masterVolumeVal);
-        }
-
-        // Ambient Sound Setup & Dual Crossfade Logic
-        function setupAmbientAudio() {
-            ambientAudio1.src = "sounds/ambient.mp3";
-            ambientAudio2.src = "sounds/ambient.mp3";
-            ambientAudio1.loop = false;
-            ambientAudio2.loop = false;
-            ambientAudio1.preload = "auto";
-            ambientAudio2.preload = "auto";
-
-            ambientAudio1.addEventListener('timeupdate', () => checkAmbientCrossfade(1));
-            ambientAudio2.addEventListener('timeupdate', () => checkAmbientCrossfade(2));
-        }
-
-        function checkAmbientCrossfade(playerNum) {
-            if (!isAmbientPlaying || !isPageVisible) return;
-            const player = playerNum === 1 ? ambientAudio1 : ambientAudio2;
-            
-            if (player.duration && !isNaN(player.duration)) {
-                const timeLeft = player.duration - player.currentTime;
-                if (timeLeft <= CROSSFADE_DURATION && !player.crossfadingTriggered) {
-                    player.crossfadingTriggered = true;
-                    triggerCrossfade();
-                }
-            }
-        }
-
-        function triggerCrossfade() {
-            const outgoing = activeAmbientPlayer === 1 ? ambientAudio1 : ambientAudio2;
-            const incoming = activeAmbientPlayer === 1 ? ambientAudio2 : ambientAudio1;
-
-            incoming.currentTime = 0;
-            incoming.crossfadingTriggered = false;
-            incoming.play().catch(err => console.log("Ambient crossfade load error:", err));
-
-            let startTime = performance.now();
-            let maxVol = (isMasterMuted ? 0 : masterVolumeVal) * ambientVolumeVal;
-
-            function fadeStep(currentTime) {
-                let elapsed = (currentTime - startTime) / 1000;
-                let progress = Math.min(elapsed / CROSSFADE_DURATION, 1);
-
-                outgoing.volume = Math.max(0, maxVol * (1 - progress));
-                incoming.volume = Math.max(0, maxVol * progress);
-
-                if (progress < 1) {
-                    requestAnimationFrame(fadeStep);
-                } else {
-                    outgoing.pause();
-                    outgoing.crossfadingTriggered = false;
-                    activeAmbientPlayer = activeAmbientPlayer === 1 ? 2 : 1;
-                }
-            }
-            requestAnimationFrame(fadeStep);
-        }
-
-        function toggleAmbientPlay() {
-            if (isAmbientPlaying) {
-                stopAmbient();
-            } else {
-                startAmbient();
-            }
-        }
-
-        function startAmbient() {
-            isAmbientPlaying = true;
-            document.getElementById('ambientPlayBtn').className = "w-full py-3.5 sm:py-3 bg-amber-600 hover:bg-amber-500 text-white font-medium rounded-2xl shadow-lg shadow-amber-600/30 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95";
-            document.getElementById('ambientPlayIcon').className = "fa-solid fa-pause";
-            document.getElementById('ambientPlayText').textContent = "Pause Ambient";
-            document.getElementById('ambientDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-            document.getElementById('ambientStatusText').textContent = "Playing";
-
-            const activePlayer = activeAmbientPlayer === 1 ? ambientAudio1 : ambientAudio2;
-            activePlayer.currentTime = 0;
-            activePlayer.crossfadingTriggered = false;
-            applyAmbientVolumes();
-            activePlayer.play().catch(e => {
-                showToast("Could not load sounds/ambient.mp3. Check file path.", "error");
-                stopAmbient();
-            });
-        }
-
-        function stopAmbient() {
-            isAmbientPlaying = false;
-            ambientAudio1.pause();
-            ambientAudio2.pause();
-            document.getElementById('ambientPlayBtn').className = "w-full py-3.5 sm:py-3 bg-orange-600 hover:bg-orange-500 text-white font-medium rounded-2xl shadow-lg shadow-orange-600/30 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95";
-            document.getElementById('ambientPlayIcon').className = "fa-solid fa-play";
-            document.getElementById('ambientPlayText').textContent = "Play Ambient";
-            document.getElementById('ambientDot').className = "w-2 h-2 rounded-full bg-slate-600";
-            document.getElementById('ambientStatusText').textContent = "Stopped";
-        }
-
-        function setAmbientVolume(val) {
-            ambientVolumeVal = parseFloat(val);
-            document.getElementById('ambientVolVal').textContent = Math.round(ambientVolumeVal * 100) + "%";
-            applyAmbientVolumes();
-        }
-
-        function applyAmbientVolumes() {
-            const targetVol = (isMasterMuted ? 0 : masterVolumeVal) * ambientVolumeVal;
-            const activePlayer = activeAmbientPlayer === 1 ? ambientAudio1 : ambientAudio2;
-            if (isAmbientPlaying) {
-                activePlayer.volume = targetVol;
-            }
-        }
-
-        // Soundboard Library Controls
-        function renderSoundCards(filter = "") {
-            const grid = document.getElementById('soundGrid');
-            grid.innerHTML = "";
-
-            const filtered = soundFiles.filter(name => name.toLowerCase().includes(filter.toLowerCase()));
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-12 text-center text-slate-500 text-xs">
-                        <i class="fa-solid fa-ghost text-2xl mb-2 block text-orange-500/50"></i>
-                        No spooky sounds found matching your search.
-                    </div>
-                `;
-                return;
-            }
-
-            filtered.forEach(filename => {
-                const displayName = filename.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-                
-                if (!soundInstances[filename]) {
-                    soundInstances[filename] = {
-                        audio: new Audio(`sounds/${filename}`),
-                        volume: 0.8,
-                        loop: false,
-                        isPlaying: false
-                    };
-                    soundInstances[filename].audio.preload = "auto";
-                    soundInstances[filename].audio.addEventListener('ended', () => {
-                        if (!soundInstances[filename].loop) {
-                            soundInstances[filename].isPlaying = false;
-                            updateSoundCardUI(filename);
-                        }
-                    });
-                }
-
-                const card = document.createElement('div');
-                card.id = `sound-card-${filename}`;
-                card.className = "bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-orange-500/30 transition";
-                card.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3 overflow-hidden">
-                            <div class="w-9 h-9 rounded-xl bg-slate-800 text-orange-400 flex items-center justify-center shrink-0 border border-slate-700/50">
-                                <i class="fa-solid fa-volume-high text-xs"></i>
-                            </div>
-                            <div class="overflow-hidden">
-                                <h4 class="text-sm font-semibold text-slate-200 truncate capitalize" title="${displayName}">${displayName}</h4>
-                                <span class="text-[10px] text-slate-500 font-mono">${filename}</span>
-                            </div>
-                        </div>
-                        <button onclick="toggleLoop('${filename}')" id="loop-btn-${filename}" class="w-8 h-8 rounded-xl bg-slate-800/60 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center transition border border-slate-700/50 cursor-pointer" title="Toggle Loop">
-                            <i class="fa-solid fa-rotate-right"></i>
-                        </button>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <input type="range" min="0" max="1" step="0.01" value="${soundInstances[filename].volume}" oninput="setSoundVolume('${filename}', this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer">
-                            <span id="vol-text-${filename}" class="text-[10px] font-mono text-slate-500 w-8 text-right">${Math.round(soundInstances[filename].volume * 100)}%</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="togglePlaySound('${filename}')" id="play-btn-${filename}" class="py-2.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95">
-                                <i id="play-icon-${filename}" class="fa-solid fa-play"></i>
-                                <span id="play-text-${filename}">Play</span>
-                            </button>
-                            <button onclick="stopSound('${filename}')" class="py-2.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-medium rounded-xl border border-slate-800 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95">
-                                <i class="fa-solid fa-stop"></i>
-                                <span>Stop</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-                updateSoundCardUI(filename);
-            });
-        }
-
-        function filterSounds(query) {
-            renderSoundCards(query);
-        }
-
-        function togglePlaySound(filename) {
-            const item = soundInstances[filename];
-            if (!item) return;
-
-            if (item.isPlaying) {
-                item.audio.pause();
-                item.audio.currentTime = 0;
-                item.isPlaying = false;
-                updateSoundCardUI(filename);
-            } else {
-                item.audio.currentTime = 0;
-                const effectiveVol = (isMasterMuted ? 0 : masterVolumeVal) * item.volume;
-                item.audio.volume = Math.max(0, Math.min(1, effectiveVol));
-                item.audio.loop = item.loop;
-                item.audio.play().then(() => {
-                    item.isPlaying = true;
-                    updateSoundCardUI(filename);
-                }).catch(e => {
-                    showToast(`Failed to play sounds/${filename}`, "error");
-                });
-            }
-        }
-
-        function stopSound(filename) {
-            const item = soundInstances[filename];
-            if (item) {
-                item.audio.pause();
-                item.audio.currentTime = 0;
-                item.isPlaying = false;
-                updateSoundCardUI(filename);
-            }
-        }
-
-        function stopAllSounds() {
-            Object.keys(soundInstances).forEach(name => {
-                stopSound(name);
-            });
+    async function toggleAmbient() {
+        if (isAmbientPlaying) {
             stopAmbient();
-            showToast("All audio silenced", "info");
-        }
+        } else {
+            await loadAmbient();
+            if (!ambientBuffer) return;
+            const ctx = getAudioContext();
+            
+            ambientSource = ctx.createBufferSource();
+            ambientSource.buffer = ambientBuffer;
+            ambientSource.loop = true;
 
-        function toggleLoop(filename) {
-            const item = soundInstances[filename];
-            if (!item) return;
-            item.loop = !item.loop;
-            item.audio.loop = item.loop;
-            const btn = document.getElementById(`loop-btn-${filename}`);
-            if (item.loop) {
-                btn.className = "w-8 h-8 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30 text-xs flex items-center justify-center transition cursor-pointer";
-                showToast(`Loop enabled for ${filename}`, "info");
-            } else {
-                btn.className = "w-8 h-8 rounded-xl bg-slate-800/60 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center transition border border-slate-700/50 cursor-pointer";
-                showToast(`Loop disabled for ${filename}`, "info");
+            ambientGain = ctx.createGain();
+            const sliderVal = document.querySelector('.panel input[type=range]').value;
+            ambientGain.gain.setValueAtTime(0, ctx.currentTime);
+            ambientGain.gain.linearRampToValueAtTime(parseFloat(sliderVal), ctx.currentTime + 0.1); // Smooth ramp to avoid clicks
+
+            ambientSource.connect(ambientGain);
+            ambientGain.connect(ctx.destination);
+            
+            ambientSource.start(0);
+            isAmbientPlaying = true;
+            document.getElementById('ambientBtn').textContent = 'Pause Ambient';
+        }
+    }
+
+    function stopAmbient() {
+        if (!isAmbientPlaying || !ambientSource) return;
+        const ctx = getAudioContext();
+        if (ambientGain) {
+            ambientGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1);
+        }
+        setTimeout(() => {
+            try { ambientSource.stop(); } catch(e){}
+            isAmbientPlaying = false;
+            document.getElementById('ambientBtn').textContent = 'Play Ambient';
+        }, 100);
+    }
+
+    function setAmbientVolume(val) {
+        if (ambientGain && isAmbientPlaying) {
+            const ctx = getAudioContext();
+            ambientGain.gain.linearRampToValueAtTime(parseFloat(val), ctx.currentTime + 0.05);
+        }
+    }
+
+    // --- Sound Effects Setup ---
+    const soundBuffers = {};
+    async function loadSoundBuffer(file, callback) {
+        if (soundBuffers[file]) {
+            callback(soundBuffers[file]);
+            return;
+        }
+        try {
+            const ctx = getAudioContext();
+            const res = await fetch(file);
+            const arrayBuffer = await res.arrayBuffer();
+            const buffer = await ctx.decodeAudioData(arrayBuffer);
+            soundBuffers[file] = buffer;
+            callback(buffer);
+        } catch(e) {
+            console.error("Failed to load sound:", file);
+        }
+    }
+
+    function playSound(file, volume) {
+        const ctx = getAudioContext();
+        loadSoundBuffer(file, (buffer) => {
+            // Stop previous instance of this exact sound if playing
+            if (soundNodes[file]) {
+                try { soundNodes[file].gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.05); } catch(e){}
             }
+
+            const source = ctx.createBufferSource();
+            source.buffer = buffer;
+
+            const gainNode = ctx.createGain();
+            gainNode.gain.setValueAtTime(parseFloat(volume), ctx.currentTime);
+
+            source.connect(gainNode);
+            gainNode.connect(ctx.destination);
+
+            source.start(0);
+            soundNodes[file] = { source, gainNode };
+        });
+    }
+
+    function updateSoundVolume(file, volume) {
+        if (soundNodes[file] && soundNodes[file].gainNode) {
+            const ctx = getAudioContext();
+            soundNodes[file].gainNode.gain.linearRampToValueAtTime(parseFloat(volume), ctx.currentTime + 0.05);
         }
+    }
 
-        function setSoundVolume(filename, val) {
-            const item = soundInstances[filename];
-            if (!item) return;
-            item.volume = parseFloat(val);
-            document.getElementById(`vol-text-${filename}`).textContent = Math.round(item.volume * 100) + "%";
-            const effectiveVol = (isMasterMuted ? 0 : masterVolumeVal) * item.volume;
-            item.audio.volume = Math.max(0, Math.min(1, effectiveVol));
-        }
+    // Render sound grid
+    const grid = document.getElementById('soundGrid');
+    sounds.forEach(snd => {
+        const div = document.createElement('div');
+        div.className = 'sound-card';
+        div.innerHTML = `
+            <button onclick="playSound('${snd.file}', document.getElementById('vol_${sanitize(snd.name)}').value)">${snd.name}</button>
+            <input id="vol_${sanitize(snd.name)}" type="range" min="0" max="1" step="0.01" value="0.8" oninput="updateSoundVolume('${snd.file}', this.value)">
+        `;
+        grid.appendChild(div);
+    });
 
-        function updateSoundCardUI(filename) {
-            const item = soundInstances[filename];
-            const btn = document.getElementById(`play-btn-${filename}`);
-            const icon = document.getElementById(`play-icon-${filename}`);
-            const text = document.getElementById(`play-text-${filename}`);
-            const card = document.getElementById(`sound-card-${filename}`);
+    function sanitize(str) {
+        return str.replace(/[^a-zA-Z0-9]/g, '_');
+    }
+</script>
 
-            if (!btn || !card) return;
-
-            if (item && item.isPlaying) {
-                btn.className = "py-2.5 sm:py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-medium rounded-xl shadow-md shadow-orange-600/20 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95";
-                icon.className = "fa-solid fa-rotate animate-spin";
-                text.textContent = "Playing";
-                card.className = "bg-slate-900/90 border border-orange-500/30 rounded-2xl p-4 flex flex-col justify-between space-y-4 transition shadow-lg shadow-orange-500/5";
-            } else {
-                btn.className = "py-2.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95";
-                icon.className = "fa-solid fa-play";
-                text.textContent = "Play";
-                card.className = "bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
-            }
-        }
-
-        function showToast(msg, type = "success") {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.textContent = msg;
-            if (type === "error") {
-                toastIcon.className = "fa-solid fa-circle-exclamation text-red-400";
-            } else if (type === "info") {
-                toastIcon.className = "fa-solid fa-circle-info text-orange-400";
-            } else {
-                toastIcon.className = "fa-solid fa-circle-check text-orange-400";
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-    </script>
 </body>
 </html>
