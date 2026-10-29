@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ambient & Soundboard Studio</title>
+    <title>Halloween Sounds</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,10 +12,10 @@
             theme: {
                 extend: {
                     colors: {
-                        darkbg: '#0f172a',
-                        cardbg: '#1e293b',
-                        accent: '#3b82f6',
-                        accenthover: '#2563eb'
+                        darkbg: '#090d16',
+                        cardbg: '#131c2e',
+                        accent: '#f97316', // Orange theme for Halloween
+                        accenthover: '#ea580c'
                     }
                 }
             }
@@ -26,41 +26,46 @@
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Custom range styling */
-        input[type=range] {
-            accent-color: #3b82f6;
-        }
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        input[type=range] { accent-color: #f97316; }
     </style>
 </head>
-<body class="bg-darkbg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-accent selection:text-white">
+<body class="bg-darkbg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-accent selection:text-white pb-12 sm:pb-0">
 
     <!-- Header Section -->
-    <header class="border-b border-slate-800 bg-cardbg/50 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                    <i class="fa-solid fa-sliders text-white text-lg"></i>
+    <header class="border-b border-slate-800/80 bg-cardbg/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-600/30 shrink-0">
+                        <i class="fa-solid fa-ghost text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center space-x-2">
+                            <span>Halloween Sounds</span>
+                        </h1>
+                        <p class="text-[11px] text-slate-400">Spooky Soundboard & Ambient Mixer</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-xl font-bold tracking-tight text-white">Soundscape Studio</h1>
-                    <p class="text-xs text-slate-400">GitHub Pages Ready Soundboard & Ambient Mixer</p>
-                </div>
+                <!-- Mobile Config Trigger button -->
+                <button onclick="openConfigModal()" class="sm:hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center cursor-pointer">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </button>
             </div>
 
             <!-- Master Controls Header -->
-            <div class="flex items-center space-x-4 bg-slate-900/80 px-4 py-2.5 rounded-2xl border border-slate-800">
-                <div class="flex items-center space-x-2">
-                    <button id="masterMuteBtn" onclick="toggleMasterMute()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-all cursor-pointer">
+            <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto space-x-3 bg-slate-900/90 px-4 py-2.5 rounded-2xl border border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <button id="masterMuteBtn" onclick="toggleMasterMute()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-all cursor-pointer shrink-0">
                         <i id="masterMuteIcon" class="fa-solid fa-volume-high"></i>
                     </button>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Master Volume</span>
-                        <input id="masterVolume" type="range" min="0" max="1" step="0.01" value="0.8" oninput="updateMasterVolume(this.value)" class="w-24 sm:w-32 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                        <input id="masterVolume" type="range" min="0" max="1" step="0.01" value="0.8" oninput="updateMasterVolume(this.value)" class="w-28 sm:w-32 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
                     </div>
                 </div>
-                <div class="h-6 w-[1px] bg-slate-800"></div>
-                <button onclick="openConfigModal()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700 transition flex items-center space-x-1.5 cursor-pointer">
+                <div class="hidden sm:block h-6 w-[1px] bg-slate-800"></div>
+                <button onclick="openConfigModal()" class="hidden sm:flex text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700 transition items-center space-x-1.5 cursor-pointer">
                     <i class="fa-solid fa-gear"></i>
                     <span>Config</span>
                 </button>
@@ -69,18 +74,18 @@
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
 
-        <!-- Left Column: Ambient Dedicated Player (1 span on lg) -->
+        <!-- Left Column: Ambient Dedicated Player -->
         <section class="lg:col-span-1 flex flex-col space-y-6">
-            <div class="bg-cardbg rounded-3xl p-6 border border-slate-800/80 shadow-xl relative overflow-hidden flex flex-col justify-between">
+            <div class="bg-cardbg rounded-3xl p-5 sm:p-6 border border-slate-800/80 shadow-xl relative overflow-hidden flex flex-col justify-between">
                 <!-- Background decorative glow -->
-                <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
-                            Dedicated Background
+                        <span class="text-xs font-semibold uppercase tracking-widest text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full border border-orange-500/20">
+                            Spooky Ambient
                         </span>
                         <div id="ambientStatusBadge" class="flex items-center space-x-1.5 text-xs text-slate-400">
                             <span class="w-2 h-2 rounded-full bg-slate-600" id="ambientDot"></span>
@@ -88,14 +93,22 @@
                         </div>
                     </div>
 
-                    <h2 class="text-2xl font-bold text-white mb-2">Ambient Soundscape</h2>
-                    <p class="text-sm text-slate-400 mb-6">Continuous seamless playback with automatic 3-second crossfading loop.</p>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">Haunted Atmosphere</h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mb-6">Continuous background track with seamless 3-second crossfading loop.</p>
                 </div>
 
                 <div class="space-y-6">
-                    <!-- Visual waveform placeholder / equalizer bars -->
-                    <div class="h-16 bg-slate-900/60 rounded-2xl border border-slate-800/80 p-3 flex items-end justify-between gap-1 overflow-hidden" id="ambientVisualizer">
-                        <!-- Bars generated via JS -->
+                    <!-- Low power visual indicator (Replaces heavy canvas/JS interval animation when inactive or backgrounded) -->
+                    <div class="h-14 bg-slate-900/60 rounded-2xl border border-slate-800/80 px-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-xs text-slate-400">
+                            <i class="fa-solid fa-wave-square text-orange-400"></i>
+                            <span id="powerModeText">Power Saver: Active</span>
+                        </div>
+                        <div class="flex space-x-1">
+                            <div class="w-1.5 h-3 bg-orange-500/40 rounded-full"></div>
+                            <div class="w-1.5 h-6 bg-orange-500/70 rounded-full"></div>
+                            <div class="w-1.5 h-4 bg-orange-500/50 rounded-full"></div>
+                        </div>
                     </div>
 
                     <!-- Ambient Controls -->
@@ -107,11 +120,11 @@
                         <input id="ambientVolSlider" type="range" min="0" max="1" step="0.01" value="0.7" oninput="setAmbientVolume(this.value)" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
 
                         <div class="grid grid-cols-2 gap-3 pt-2">
-                            <button id="ambientPlayBtn" onclick="toggleAmbientPlay()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-2xl shadow-lg shadow-blue-600/30 transition flex items-center justify-center space-x-2 cursor-pointer">
+                            <button id="ambientPlayBtn" onclick="toggleAmbientPlay()" class="w-full py-3.5 sm:py-3 bg-orange-600 hover:bg-orange-500 text-white font-medium rounded-2xl shadow-lg shadow-orange-600/30 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95">
                                 <i id="ambientPlayIcon" class="fa-solid fa-play"></i>
                                 <span id="ambientPlayText">Play Ambient</span>
                             </button>
-                            <button onclick="stopAmbient()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-2xl border border-slate-700 transition flex items-center justify-center space-x-2 cursor-pointer">
+                            <button onclick="stopAmbient()" class="w-full py-3.5 sm:py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-2xl border border-slate-700 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95">
                                 <i class="fa-solid fa-stop"></i>
                                 <span>Stop</span>
                             </button>
@@ -121,31 +134,31 @@
             </div>
 
             <!-- GitHub Pages Notice Card -->
-            <div class="bg-cardbg/60 rounded-2xl p-5 border border-slate-800 text-xs text-slate-400 leading-relaxed">
+            <div class="bg-cardbg/60 rounded-2xl p-4 sm:p-5 border border-slate-800 text-xs text-slate-400 leading-relaxed">
                 <div class="flex items-start space-x-3">
-                    <i class="fa-solid fa-circle-info text-blue-400 text-sm mt-0.5"></i>
+                    <i class="fa-solid fa-circle-info text-orange-400 text-sm mt-0.5"></i>
                     <div>
-                        <strong class="text-slate-200 block mb-1">GitHub Pages Hosting Note:</strong>
-                        Static servers cannot list folders automatically. Place your sound files inside a folder named <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">sounds/</code> and configure filenames using the Config button above.
+                        <strong class="text-slate-200 block mb-1">GitHub Pages Setup:</strong>
+                        Place sound files in a <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">sounds/</code> folder. Include <code class="text-slate-300">ambient.mp3</code> for the haunted background.
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Right Column: Soundboard Library (2 span on lg) -->
+        <!-- Right Column: Soundboard Library -->
         <section class="lg:col-span-2 flex flex-col space-y-6">
-            <div class="bg-cardbg rounded-3xl p-6 border border-slate-800/80 shadow-xl flex flex-col h-full">
+            <div class="bg-cardbg rounded-3xl p-5 sm:p-6 border border-slate-800/80 shadow-xl flex flex-col h-full">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-2xl font-bold text-white mb-1">Sound Library</h2>
-                        <p class="text-sm text-slate-400">Trigger individual sound effects and tune volumes.</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-white mb-1">Sound Effects</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">Tap to trigger individual creepy sound effects.</p>
                     </div>
                     <div class="flex items-center space-x-2 w-full sm:w-auto">
                         <div class="relative flex-grow sm:flex-grow-0">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-                            <input type="text" id="soundSearch" placeholder="Search sounds..." oninput="filterSounds(this.value)" class="w-full sm:w-48 bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="soundSearch" placeholder="Search sounds..." oninput="filterSounds(this.value)" class="w-full sm:w-48 bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 sm:py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500 transition">
                         </div>
-                        <button onclick="stopAllSounds()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-medium border border-slate-700 transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap">
+                        <button onclick="stopAllSounds()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-medium border border-slate-700 transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap active:scale-95">
                             <i class="fa-solid fa-ban"></i>
                             <span>Stop All</span>
                         </button>
@@ -163,7 +176,7 @@
 
     <!-- Footer -->
     <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        <p>Built for Static Deployment (GitHub Pages) • Uses Web Audio API & HTML5 Audio Elements</p>
+        <p>Halloween Sounds • GitHub Pages Static Hosting • Low Power Battery Saver Enabled</p>
     </footer>
 
     <!-- Config Modal -->
@@ -171,25 +184,25 @@
         <div class="bg-cardbg border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-sliders text-blue-500"></i>
-                    <span>Soundboard Manifest Config</span>
+                    <i class="fa-solid fa-sliders text-orange-500"></i>
+                    <span>Sound Manifest Config</span>
                 </h3>
                 <button onclick="closeConfigModal()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <p class="text-xs text-slate-400 mb-4">
-                Edit the JSON array below to list all your sound files residing in your repository's <code class="text-slate-300">sounds/</code> folder. Changes save automatically to your browser storage.
+                Edit the JSON array below to list all your sound files residing in your repository's <code class="text-slate-300">sounds/</code> folder.
             </p>
             <div class="mb-4">
                 <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Sounds Array (JSON)</label>
-                <textarea id="configJsonInput" rows="8" class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500 transition"></textarea>
+                <textarea id="configJsonInput" rows="8" class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-orange-500 transition"></textarea>
             </div>
             <div class="flex justify-end space-x-3">
                 <button onclick="resetDefaultConfig()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">
                     Reset Defaults
                 </button>
-                <button onclick="saveAndApplyConfig()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-medium shadow-lg shadow-blue-600/30 transition">
+                <button onclick="saveAndApplyConfig()" class="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-medium shadow-lg shadow-orange-600/30 transition">
                     Save & Apply
                 </button>
             </div>
@@ -198,13 +211,13 @@
 
     <!-- Alert / Notification Toast -->
     <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 border border-slate-700 text-slate-200 px-4 py-3 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3 text-xs">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-blue-400"></i>
+        <i id="toastIcon" class="fa-solid fa-circle-check text-orange-400"></i>
         <span id="toastMsg">Action completed successfully.</span>
     </div>
 
     <!-- Application Script Logic -->
     <script>
-        /* Default Sound Manifest Configuration */
+        /* Default Spooky Halloween Sound Manifest */
         const DEFAULT_SOUNDS = [
             "air hiss.wav",
             "loud knock ambient.wav",
@@ -214,7 +227,7 @@
         ];
 
         let soundFiles = [];
-        let soundInstances = {}; // Stores audio elements or state for individual sound effects
+        let soundInstances = {};
         let masterVolumeVal = 0.8;
         let isMasterMuted = false;
 
@@ -224,21 +237,41 @@
         let activeAmbientPlayer = 1;
         let isAmbientPlaying = false;
         let ambientVolumeVal = 0.7;
-        let ambientCrossfadeTimer = null;
-        let ambientCheckInterval = null;
         const CROSSFADE_DURATION = 3; // 3 seconds crossfade
+        let isPageVisible = true;
+        let savedAmbientStateBeforeHide = false;
 
-        // Initialize App on Window Load
         window.onload = function() {
             loadConfiguration();
-            initVisualizerBars();
             setupAmbientAudio();
             renderSoundCards();
+            setupVisibilityAPI();
         };
 
-        // Load configuration from localStorage or fallback to defaults
+        // Page Visibility API for Low Power / Battery Saving when minimized or tab switched
+        function setupVisibilityAPI() {
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden) {
+                    isPageVisible = false;
+                    document.getElementById('powerModeText').textContent = "Power Saver: Low Power (Background)";
+                    // If ambient is playing, pause to save battery on mobile background, or lower resources
+                    if (isAmbientPlaying) {
+                        savedAmbientStateBeforeHide = true;
+                        stopAmbient();
+                    }
+                } else {
+                    isPageVisible = true;
+                    document.getElementById('powerModeText').textContent = "Power Saver: Active";
+                    if (savedAmbientStateBeforeHide) {
+                        savedAmbientStateBeforeHide = false;
+                        startAmbient();
+                    }
+                }
+            });
+        }
+
         function loadConfiguration() {
-            const saved = localStorage.getItem('soundboard_manifest');
+            const saved = localStorage.getItem('halloween_sounds_manifest');
             if (saved) {
                 try {
                     soundFiles = JSON.parse(saved);
@@ -270,7 +303,7 @@
                 const parsed = JSON.parse(document.getElementById('configJsonInput').value);
                 if (!Array.isArray(parsed)) throw new Error("Must be an array");
                 soundFiles = parsed;
-                localStorage.setItem('soundboard_manifest', JSON.stringify(soundFiles));
+                localStorage.setItem('halloween_sounds_manifest', JSON.stringify(soundFiles));
                 closeConfigModal();
                 renderSoundCards();
                 showToast("Configuration saved successfully!", "success");
@@ -282,9 +315,7 @@
         // Master Audio Controls
         function updateMasterVolume(val) {
             masterVolumeVal = parseFloat(val);
-            // Update ambient player volumes
             applyAmbientVolumes();
-            // Update individual sound volumes
             Object.keys(soundInstances).forEach(name => {
                 const item = soundInstances[name];
                 if (item && item.audio) {
@@ -311,9 +342,8 @@
         function setupAmbientAudio() {
             ambientAudio1.src = "sounds/ambient.mp3";
             ambientAudio2.src = "sounds/ambient.mp3";
-            ambientAudio1.loop = false; // Managed manually for smooth crossfade
+            ambientAudio1.loop = false;
             ambientAudio2.loop = false;
-
             ambientAudio1.preload = "auto";
             ambientAudio2.preload = "auto";
 
@@ -322,10 +352,9 @@
         }
 
         function checkAmbientCrossfade(playerNum) {
-            if (!isAmbientPlaying) return;
+            if (!isAmbientPlaying || !isPageVisible) return;
             const player = playerNum === 1 ? ambientAudio1 : ambientAudio2;
             
-            // If remaining time is less than crossfade duration and alternate player is not active
             if (player.duration && !isNaN(player.duration)) {
                 const timeLeft = player.duration - player.currentTime;
                 if (timeLeft <= CROSSFADE_DURATION && !player.crossfadingTriggered) {
@@ -341,7 +370,7 @@
 
             incoming.currentTime = 0;
             incoming.crossfadingTriggered = false;
-            incoming.play().catch(err => console.log("Autoplay or load error:", err));
+            incoming.play().catch(err => console.log("Ambient crossfade load error:", err));
 
             let startTime = performance.now();
             let maxVol = (isMasterMuted ? 0 : masterVolumeVal) * ambientVolumeVal;
@@ -374,11 +403,11 @@
 
         function startAmbient() {
             isAmbientPlaying = true;
-            document.getElementById('ambientPlayBtn').className = "w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-medium rounded-2xl shadow-lg shadow-amber-600/30 transition flex items-center justify-center space-x-2 cursor-pointer";
+            document.getElementById('ambientPlayBtn').className = "w-full py-3.5 sm:py-3 bg-amber-600 hover:bg-amber-500 text-white font-medium rounded-2xl shadow-lg shadow-amber-600/30 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95";
             document.getElementById('ambientPlayIcon').className = "fa-solid fa-pause";
             document.getElementById('ambientPlayText').textContent = "Pause Ambient";
             document.getElementById('ambientDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-            document.getElementById('ambientStatusText').textContent = "Playing (Crossfading)";
+            document.getElementById('ambientStatusText').textContent = "Playing";
 
             const activePlayer = activeAmbientPlayer === 1 ? ambientAudio1 : ambientAudio2;
             activePlayer.currentTime = 0;
@@ -394,7 +423,7 @@
             isAmbientPlaying = false;
             ambientAudio1.pause();
             ambientAudio2.pause();
-            document.getElementById('ambientPlayBtn').className = "w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-2xl shadow-lg shadow-blue-600/30 transition flex items-center justify-center space-x-2 cursor-pointer";
+            document.getElementById('ambientPlayBtn').className = "w-full py-3.5 sm:py-3 bg-orange-600 hover:bg-orange-500 text-white font-medium rounded-2xl shadow-lg shadow-orange-600/30 transition flex items-center justify-center space-x-2 cursor-pointer active:scale-95";
             document.getElementById('ambientPlayIcon').className = "fa-solid fa-play";
             document.getElementById('ambientPlayText').textContent = "Play Ambient";
             document.getElementById('ambientDot').className = "w-2 h-2 rounded-full bg-slate-600";
@@ -425,8 +454,8 @@
             if (filtered.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full py-12 text-center text-slate-500 text-xs">
-                        <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
-                        No sound files found matching your search.
+                        <i class="fa-solid fa-ghost text-2xl mb-2 block text-orange-500/50"></i>
+                        No spooky sounds found matching your search.
                     </div>
                 `;
                 return;
@@ -453,35 +482,35 @@
 
                 const card = document.createElement('div');
                 card.id = `sound-card-${filename}`;
-                card.className = "bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
+                card.className = "bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-orange-500/30 transition";
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3 overflow-hidden">
-                            <div class="w-9 h-9 rounded-xl bg-slate-800 text-blue-400 flex items-center justify-center shrink-0 border border-slate-700/50">
-                                <i class="fa-solid fa-music text-xs"></i>
+                            <div class="w-9 h-9 rounded-xl bg-slate-800 text-orange-400 flex items-center justify-center shrink-0 border border-slate-700/50">
+                                <i class="fa-solid fa-volume-high text-xs"></i>
                             </div>
                             <div class="overflow-hidden">
                                 <h4 class="text-sm font-semibold text-slate-200 truncate capitalize" title="${displayName}">${displayName}</h4>
                                 <span class="text-[10px] text-slate-500 font-mono">${filename}</span>
                             </div>
                         </div>
-                        <button onclick="toggleLoop('${filename}')" id="loop-btn-${filename}" class="w-7 h-7 rounded-lg bg-slate-800/60 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center transition border border-slate-700/50 cursor-pointer" title="Toggle Loop">
+                        <button onclick="toggleLoop('${filename}')" id="loop-btn-${filename}" class="w-8 h-8 rounded-xl bg-slate-800/60 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center transition border border-slate-700/50 cursor-pointer" title="Toggle Loop">
                             <i class="fa-solid fa-rotate-right"></i>
                         </button>
                     </div>
 
                     <div class="space-y-3">
                         <div class="flex items-center space-x-3">
-                            <input type="range" min="0" max="1" step="0.01" value="${soundInstances[filename].volume}" oninput="setSoundVolume('${filename}', this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" min="0" max="1" step="0.01" value="${soundInstances[filename].volume}" oninput="setSoundVolume('${filename}', this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer">
                             <span id="vol-text-${filename}" class="text-[10px] font-mono text-slate-500 w-8 text-right">${Math.round(soundInstances[filename].volume * 100)}%</span>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="togglePlaySound('${filename}')" id="play-btn-${filename}" class="py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                            <button onclick="togglePlaySound('${filename}')" id="play-btn-${filename}" class="py-2.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95">
                                 <i id="play-icon-${filename}" class="fa-solid fa-play"></i>
                                 <span id="play-text-${filename}">Play</span>
                             </button>
-                            <button onclick="stopSound('${filename}')" class="py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-medium rounded-xl border border-slate-800 transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                            <button onclick="stopSound('${filename}')" class="py-2.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-medium rounded-xl border border-slate-800 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95">
                                 <i class="fa-solid fa-stop"></i>
                                 <span>Stop</span>
                             </button>
@@ -535,7 +564,7 @@
                 stopSound(name);
             });
             stopAmbient();
-            showToast("All audio stopped", "info");
+            showToast("All audio silenced", "info");
         }
 
         function toggleLoop(filename) {
@@ -545,10 +574,10 @@
             item.audio.loop = item.loop;
             const btn = document.getElementById(`loop-btn-${filename}`);
             if (item.loop) {
-                btn.className = "w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs flex items-center justify-center transition cursor-pointer";
+                btn.className = "w-8 h-8 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30 text-xs flex items-center justify-center transition cursor-pointer";
                 showToast(`Loop enabled for ${filename}`, "info");
             } else {
-                btn.className = "w-7 h-7 rounded-lg bg-slate-800/60 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center transition border border-slate-700/50 cursor-pointer";
+                btn.className = "w-8 h-8 rounded-xl bg-slate-800/60 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center transition border border-slate-700/50 cursor-pointer";
                 showToast(`Loop disabled for ${filename}`, "info");
             }
         }
@@ -572,45 +601,18 @@
             if (!btn || !card) return;
 
             if (item && item.isPlaying) {
-                btn.className = "py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-xl shadow-md shadow-blue-600/20 transition flex items-center justify-center space-x-1.5 cursor-pointer";
+                btn.className = "py-2.5 sm:py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-medium rounded-xl shadow-md shadow-orange-600/20 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95";
                 icon.className = "fa-solid fa-rotate animate-spin";
                 text.textContent = "Playing";
-                card.className = "bg-slate-900/90 border border-blue-500/30 rounded-2xl p-4 flex flex-col justify-between space-y-4 transition shadow-lg shadow-blue-500/5";
+                card.className = "bg-slate-900/90 border border-orange-500/30 rounded-2xl p-4 flex flex-col justify-between space-y-4 transition shadow-lg shadow-orange-500/5";
             } else {
-                btn.className = "py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-2xl border border-slate-700 transition flex items-center justify-center space-x-1.5 cursor-pointer";
+                btn.className = "py-2.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95";
                 icon.className = "fa-solid fa-play";
                 text.textContent = "Play";
                 card.className = "bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
             }
         }
 
-        // Visualizer Decorative Animation
-        function initVisualizerBars() {
-            const container = document.getElementById('ambientVisualizer');
-            container.innerHTML = "";
-            for (let i = 0; i < 28; i++) {
-                const bar = document.createElement('div');
-                bar.className = "flex-1 bg-blue-500/30 rounded-full transition-all duration-150";
-                bar.style.height = "15%";
-                container.appendChild(bar);
-            }
-
-            setInterval(() => {
-                const bars = container.children;
-                for (let i = 0; i < bars.length; i++) {
-                    if (isAmbientPlaying) {
-                        const randomHeight = Math.floor(Math.random() * 85) + 15;
-                        bars[i].style.height = randomHeight + "%";
-                        bars[i].className = "flex-1 bg-blue-500 rounded-full transition-all duration-150";
-                    } else {
-                        bars[i].style.height = "15%";
-                        bars[i].className = "flex-1 bg-blue-500/20 rounded-full transition-all duration-150";
-                    }
-                }
-            }, 180);
-        }
-
-        // Toast Notification Helper
         function showToast(msg, type = "success") {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
@@ -620,9 +622,9 @@
             if (type === "error") {
                 toastIcon.className = "fa-solid fa-circle-exclamation text-red-400";
             } else if (type === "info") {
-                toastIcon.className = "fa-solid fa-circle-info text-blue-400";
+                toastIcon.className = "fa-solid fa-circle-info text-orange-400";
             } else {
-                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+                toastIcon.className = "fa-solid fa-circle-check text-orange-400";
             }
 
             toast.classList.remove('translate-y-20', 'opacity-0');
